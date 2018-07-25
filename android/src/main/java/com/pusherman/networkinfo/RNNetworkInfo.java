@@ -69,7 +69,7 @@ public class RNNetworkInfo extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void getBroadcast(final Callback callback) {
-        String ipAddress = “error”;
+        String ipAddress = "error";
 
         for (InterfaceAddress address : getInetAddresses()) {
             if (!address.getAddress().isLoopbackAddress()) {
@@ -88,7 +88,7 @@ public class RNNetworkInfo extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void getNetmask(final Callback callback) {
-        String ipAddress = “error”;
+        String ipAddress = "error";
 
         for (InterfaceAddress address : getInetAddresses()) {
             if (!address.getAddress().isLoopbackAddress() && address.getAddress() instanceof Inet4Address) {
@@ -100,7 +100,7 @@ public class RNNetworkInfo extends ReactContextBaseJavaModule {
                     (byte)(value >>> 24), (byte)(value >> 16 & 0xff), (byte)(value >> 8 & 0xff), (byte)(value & 0xff)
                 };
                 //String tempIpAddress = address.getAddress().getHostAddress().toString();
-                //Log.d(TAG, “prefix: ” + prefix + ” • mask: ” + mask + ” • last byte: ” + lastByte + ” • ip: ” + tempIpAddress);
+                //Log.d(TAG, "prefix: " + prefix + " • mask: " + mask + " • last byte: " + lastByte + " • ip: " + tempIpAddress);
                 if (lastByte >= 255)
                     continue;
                 try {
