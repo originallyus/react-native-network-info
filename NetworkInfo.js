@@ -20,6 +20,10 @@ const NetworkInfo = {
     RNNetworkInfo.getIPAddress(ip);
   },
 
+  getNetmask(ip) {
+    RNNetworkInfo.getNetmask(ip);
+  },
+
   getIPV4Address(ip) {
     RNNetworkInfo.getIPV4Address(ip);
   }
