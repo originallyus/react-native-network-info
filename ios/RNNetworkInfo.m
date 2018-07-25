@@ -124,21 +124,22 @@ RCT_EXPORT_METHOD(getIPAddress:(RCTResponseSenderBlock)callback)
     callback(@[address]);
 }
 
-    RCT_EXPORT_METHOD(getIPV4Address:(RCTResponseSenderBlock)callback)
-    {
-        NSArray *searchArray = @[ IOS_WIFI @"/" IP_ADDR_IPv4, IOS_CELLULAR @"/" IP_ADDR_IPv4 ];
-        NSDictionary *addresses = [self getAllIPAddresses];
-        NSLog(@"addresses: %@", addresses);
-        
-        __block NSString *address;
-        [searchArray enumerateObjectsUsingBlock:^(NSString *key, NSUInteger idx, BOOL *stop)
-         {
-             address = addresses[key];
-             if(address) *stop = YES;
-         } ];
-        NSString *addressToReturn = address ? address : @"0.0.0.0";
-        callback(@[addressToReturn]);
     }
+RCT_EXPORT_METHOD(getIPV4Address:(RCTResponseSenderBlock)callback)
+{
+    NSArray *searchArray = @[ IOS_WIFI @"/" IP_ADDR_IPv4, IOS_CELLULAR @"/" IP_ADDR_IPv4 ];
+    NSDictionary *addresses = [self getAllIPAddresses];
+    NSLog(@"addresses: %@", addresses);
+    
+    __block NSString *address;
+    [searchArray enumerateObjectsUsingBlock:^(NSString *key, NSUInteger idx, BOOL *stop)
+        {
+            address = addresses[key];
+            if(address) *stop = YES;
+        } ];
+    NSString *addressToReturn = address ? address : @"0.0.0.0";
+    callback(@[addressToReturn]);
+}
     
 - (NSDictionary *)getAllIPAddresses
     {
