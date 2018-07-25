@@ -81,6 +81,26 @@ public class RNNetworkInfo extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void getNetmask(/*@NonNull String ip, */final Callback callback) {
+        String ipAddress = "error";
+
+        for (InterfaceAddress address : getInetAddresses()) {
+            if (!address.getAddress().isLoopbackAddress()/*address.getAddress().toString().equalsIgnoreCase(ip)*/) {
+                int prefix = address.getNetworkPrefixLength();
+                int mask = 0xffffffff << (32 - prefix);
+                int value = mask;
+                byte[] bytes = new byte[]{ 
+                    (byte)(value >>> 24), (byte)(value >> 16 & 0xff), (byte)(value >> 8 & 0xff), (byte)(value & 0xff)
+                };
+                InetAddress netAddr = InetAddress.getByAddress(bytes);
+                ipAddress = netAddr.getHostAddress().toString();
+            }
+        }
+
+        callback.invoke(ipAddress);
+    }
+
+    @ReactMethod
     public void getIPAddress(final Callback callback) {
         String ipAddress = "error";
 
