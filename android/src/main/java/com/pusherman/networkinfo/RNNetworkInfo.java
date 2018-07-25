@@ -68,31 +68,40 @@ public class RNNetworkInfo extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getBroadcast(/*@NonNull String ip, */final Callback callback) {
-        String ipAddress = "error";
+    public void getBroadcast(final Callback callback) {
+        String ipAddress = “error”;
 
         for (InterfaceAddress address : getInetAddresses()) {
-            if (!address.getAddress().isLoopbackAddress()/*address.getAddress().toString().equalsIgnoreCase(ip)*/) {
-                ipAddress = address.getBroadcast().toString();
+            if (!address.getAddress().isLoopbackAddress()) {
+                InetAddress broadcastAddress = address.getBroadcast();
+                if (broadcastAddress != null)
+                    ipAddress = broadcastAddress.toString();
             }
         }
 
+        //remove prefix
+        if (ipAddress.startsWith("/"))
+            ipAddress = ipAddress.substring(1);
+
         callback.invoke(ipAddress);
-    }
+   }
 
     @ReactMethod
-    public void getNetmask(/*@NonNull String ip, */final Callback callback) {
-        String ipAddress = "error";
+    public void getNetmask(final Callback callback) {
+        String ipAddress = “error”;
 
         for (InterfaceAddress address : getInetAddresses()) {
-            if (!address.getAddress().isLoopbackAddress()/*address.getAddress().toString().equalsIgnoreCase(ip)*/) {
+            if (!address.getAddress().isLoopbackAddress() && address.getAddress() instanceof Inet4Address) {
                 int prefix = address.getNetworkPrefixLength();
                 int mask = 0xffffffff << (32 - prefix);
                 int value = mask;
-                byte[] bytes = new byte[]{ 
+                int lastByte = (value & 0xff);
+                byte[] bytes = new byte[]{
                     (byte)(value >>> 24), (byte)(value >> 16 & 0xff), (byte)(value >> 8 & 0xff), (byte)(value & 0xff)
                 };
-                if (bytes[3] == 255)
+                //String tempIpAddress = address.getAddress().getHostAddress().toString();
+                //Log.d(TAG, “prefix: ” + prefix + ” • mask: ” + mask + ” • last byte: ” + lastByte + ” • ip: ” + tempIpAddress);
+                if (lastByte >= 255)
                     continue;
                 try {
                     InetAddress netAddr = InetAddress.getByAddress(bytes);
@@ -100,7 +109,7 @@ public class RNNetworkInfo extends ReactContextBaseJavaModule {
                 }
                 catch (Exception ignored) {
                 }
-            }
+           }
         }
 
         callback.invoke(ipAddress);
