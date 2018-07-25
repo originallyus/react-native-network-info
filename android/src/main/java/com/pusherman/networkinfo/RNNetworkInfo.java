@@ -92,8 +92,14 @@ public class RNNetworkInfo extends ReactContextBaseJavaModule {
                 byte[] bytes = new byte[]{ 
                     (byte)(value >>> 24), (byte)(value >> 16 & 0xff), (byte)(value >> 8 & 0xff), (byte)(value & 0xff)
                 };
-                InetAddress netAddr = InetAddress.getByAddress(bytes);
-                ipAddress = netAddr.getHostAddress().toString();
+                if (bytes[3] == 255)
+                    continue;
+                try {
+                    InetAddress netAddr = InetAddress.getByAddress(bytes);
+                    ipAddress = netAddr.getHostAddress().toString();
+                }
+                catch (Exception ignored) {
+                }
             }
         }
 
